@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Liste des VMs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-purple-100 to-indigo-200 min-h-screen">
+  <div class="container mx-auto p-8">
+
+    <!-- ✅ Bouton Déconnexion -->
+    <div class="flex justify-end items-center mb-4">
+      {% if session.get('host') %}
+        <span class="text-sm text-gray-700 mr-4">Connecté à : <strong>{{ session['host'] }}</strong></span>
+        <a href="{{ url_for('logout') }}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-sm">
+          Déconnexion
+        </a>
+      {% endif %}
+    </div>
+
+    <h1 class="text-3xl font-bold text-center mb-6 text-indigo-800">Machines Virtuelles</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="mb-4 text-center">
+            <div class="bg-{{ 'red' if category == 'danger' else 'green' if category == 'success' else 'yellow' }}-100 border px-4 py-2 rounded shadow text-{{ 'red' if category == 'danger' else 'green' if category == 'success' else 'yellow' }}-700">
+              {{ message }}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="mb-6 text-center">
+      <a href="{{ url_for('create_vm') }}" class="bg-green-600 text-white px-6 py-2 rounded shadow hover:bg-green-700 text-base">
+        Créer une nouvelle VM
+      </a>
+    </div>
+
+    <table class="w-full table-auto bg-white shadow-md rounded-lg overflow-hidden text-base">
+      <thead class="bg-indigo-600 text-white">
+        <tr>
+          <th class="py-3 px-6">Nom</th>
+          <th class="py-3 px-6">État</th>
+          <th class="py-3 px-6">ID</th>
+          <th class="py-3 px-6">Mémoire</th>
+          <th class="py-3 px-6">vCPU</th>
+          <th class="py-3 px-6">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for vm in vms %}
+        <tr class="border-b hover:bg-gray-100 text-center">
+          <td class="py-3 px-6">{{ vm.name }}</td>
+          <td class="py-3 px-6">{{ vm.state }}</td>
+          <td class="py-3 px-6">{{ vm.id }}</td>
+          <td class="py-3 px-6">{{ vm.memory }}</td>
+          <td class="py-3 px-6">{{ vm.vcpus }}</td>
+          <td class="py-3 px-6">
+            <div class="flex flex-wrap justify-center gap-2">
+              {% if vm.state == 'Inactif' %}
+                <a href="{{ url_for('start_vm', name=vm.name) }}" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Démarrer</a>
+                <a href="{{ url_for('edit_vm', name=vm.name) }}" class="bg-indigo-500 text-white px-3 py-1 rounded hover:bg-indigo-600">Modifier</a>
+              {% else %}
+                <a href="{{ url_for('stop_vm', name=vm.name) }}" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Arrêter</a>
+
+                {% if vm.is_paused %}
+                  <a href="{{ url_for('resume_vm', name=vm.name) }}" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Reprendre</a>
+                {% else %}
+                  <a href="{{ url_for('pause_vm', name=vm.name) }}" class="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600">Pause</a>
+                {% endif %}
+
+                <a href="{{ url_for('save_vm', name=vm.name) }}" class="bg-cyan-600 text-white px-3 py-1 rounded hover:bg-cyan-700">Sauvegarder</a>
+              {% endif %}
+
+              {% if vm.can_restore %}
+                <a href="{{ url_for('restore_vm', name=vm.name) }}" class="bg-gray-700 text-white px-3 py-1 rounded hover:bg-gray-800">Restaurer</a>
+              {% endif %}
+
+              <a href="{{ url_for('delete_vm', name=vm.name) }}" onclick="return confirm('Supprimer la VM {{ vm.name }} ?')" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Supprimer</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

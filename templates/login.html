@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion à l'hyperviseur</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-form {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+        }
+        .login-form h2 {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .login-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .login-form button:hover {
+            background-color: #1e40af;
+        }
+        .flash {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 4px;
+        }
+        .flash.success { background-color: #d1fae5; color: #065f46; }
+        .flash.danger  { background-color: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body>
+    <form class="login-form" method="POST" action="{{ url_for('login') }}">
+        <h2>Connexion</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <label for="host">Adresse de l'hôte</label>
+        <input type="text" id="host" name="host" placeholder="ex: 192.168.1.10" required>
+
+        <label for="username">Nom d'utilisateur</label>
+        <input type="text" id="username" name="username" value="root" required>
+
+        <label for="password">Mot de passe SSH</label>
+        <input type="password" id="password" name="password" placeholder="Mot de passe" required>
+
+        <button type="submit">Se connecter</button>
+    </form>
+</body>
+</html>

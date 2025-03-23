@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Créer une VM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-bl from-pink-100 to-purple-100 min-h-screen">
+  <div class="container mx-auto p-10">
+    <h1 class="text-3xl font-bold text-center text-pink-800 mb-6">Créer une nouvelle VM</h1>
+
+    <form method="POST" class="bg-white rounded-lg shadow-lg p-8 max-w-xl mx-auto space-y-4">
+      <div>
+        <label class="block font-semibold mb-1">Nom de la VM</label>
+        <input type="text" name="name" required class="w-full border border-gray-300 px-3 py-2 rounded-lg" />
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1">Mémoire (MiB)</label>
+        <input type="number" name="memory" required class="w-full border border-gray-300 px-3 py-2 rounded-lg" />
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1">vCPU</label>
+        <input type="number" name="vcpu" required class="w-full border border-gray-300 px-3 py-2 rounded-lg" />
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1">Taille du disque (Go)</label>
+        <input type="number" name="disksize" required class="w-full border border-gray-300 px-3 py-2 rounded-lg" />
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-1">Chemin de l'ISO (facultatif)</label>
+        <input type="text" name="iso" placeholder="/var/lib/libvirt/boot/debian.iso" class="w-full border border-gray-300 px-3 py-2 rounded-lg" />
+      </div>
+
+
+      <div class="text-center">
+        <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 shadow">
+          Créer
+        </button>
+        <a href="{{ url_for('list_vms') }}" class="ml-4 text-gray-600 underline">Annuler</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
