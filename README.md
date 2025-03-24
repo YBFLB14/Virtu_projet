@@ -49,7 +49,6 @@ tp_web_kvm/
 ├── app.py                # Application principale Flask
 ├── templates/            # Fichiers HTML (login.html, index.html, create.html, etc...)
 ├── README.md             # Ce fichier
-└── image.png             # Schéma de l’architecture (illustration)
 ```
 
 
