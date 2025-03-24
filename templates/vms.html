@@ -8,7 +8,6 @@
 <body class="bg-gradient-to-br from-purple-100 to-indigo-200 min-h-screen">
   <div class="container mx-auto p-8">
 
-    <!-- ✅ Bouton Déconnexion -->
     <div class="flex justify-end items-center mb-4">
       {% if session.get('host') %}
         <span class="text-sm text-gray-700 mr-4">Connecté à : <strong>{{ session['host'] }}</strong></span>
