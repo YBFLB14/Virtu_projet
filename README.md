@@ -48,7 +48,8 @@ L'application est organisée de la manière suivante :
 tp_web_kvm/
 ├── app.py                # Application principale Flask
 ├── templates/            # Fichiers HTML (login.html, index.html, create.html, etc...)
-├── README.md             # Ce fichier
+├── README.md             # Documentation du projet
+├── demo.mp4              # Démonstration vidéos des fonctionnalités
 ```
 
 
