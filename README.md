@@ -42,7 +42,7 @@ Cette application web développée en Python avec Flask permet de gérer des mac
 
 Depuis le dossier du projet : python app.py
 
-Accéder ensuite à via le navigateur web : http://localhost:5000
+Accéder ensuite via le navigateur web : http://localhost:5000
 
 ## démo de l'application 
 
