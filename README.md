@@ -1,37 +1,42 @@
-# Gestionnaire de Machines Virtuelles avec Flask et KVM
+# Gestionnaire de Machines Virtuelles KVM
 
-Cette application web développée en Python avec Flask permet de gérer des machines virtuelles KVM via une interface web.
-
+Cette application web développée en Python avec le micro-framework Flask permet de gérer des machines virtuelles KVM via une interface web.
 
 ## Prérequis
 
 ### Système
 
 - Distribution Linux avec KVM et libvirt installés
-- Exemples de paquets requis :
-  - `qemu-kvm`
-  - `libvirt`
-  - `virt-manager`
 
 ### Python
 
 - Python 3.9 ou plus
-- Modules Python : pip install flask flask-session
+- Dépendances Python :
+  ```bash
+  pip install flask flask-session
+  ```
 - Libvirt pour Python sous Debian :
   ```
   sudo apt install python3-libvirt
   ```
 
-## Fonctionnalités
+## Fonctionnalités principales
 
-- Accès à l’interface sécurisé par authentification PAM (utilisateurs système)
-- Connexion à un hyperviseur distant via SSH
-- Affichage de la liste des machines virtuelles actives et inactives
-- Création de VM avec définition du nom, de la mémoire, du nombre de vCPU, de la taille disque et du fichier ISO
-- Modification des ressources (mémoire et vCPU) si la VM est arrêtée
-- Démarrage et arrêt d’une VM
-- Mise en pause et reprise d’une VM
-- Sauvegarde et restauration d’une VM
+- Authentification via les identifiants système (PAM)
+- Connexion à un hyperviseur distant via SSH (`qemu+ssh`)
+- Affichage de la liste des machines virtuelles :
+  - Machines virtuelles **actives** avec leurs caractéristiques (mémoire, vCPU, état)
+  - Machines virtuelles **inactives**
+- Création de VMs avec :
+  - Nom personnalisé
+  - Taille de la mémoire (en MiB)
+  - Nombre de vCPU
+  - Taille du disque (en Go)
+  - Chemin vers un fichier ISO (optionnel)
+- Démarrage et arrêt d'une VM
+- Suspension et reprise d'une VM
+- Sauvegarde et restauration de l’état d’une VM
+- Modification des ressources mémoire et CPU (si la VM est arrêtée)
 - Suppression d’une VM
 
 ## Architecture du projet
@@ -40,9 +45,14 @@ Cette application web développée en Python avec Flask permet de gérer des mac
 
 ## Lancer l'application
 
-Depuis le dossier du projet : python app.py
+Depuis le dossier du projet : 
+```bash
+python app.py
+```
 
-Accéder ensuite via le navigateur web : http://localhost:5000
+Ensuite, ouvrez votre navigateur et accédez à :  
+[http://localhost:5000](http://localhost:5000)
+
 
 ## démo de l'application 
 
