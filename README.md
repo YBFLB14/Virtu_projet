@@ -64,9 +64,12 @@ Ensuite, ouvrez votre navigateur et accédez à :
 [http://localhost:5000](http://localhost:5000)
 
 
-## démo de l'application 
+## Démonstration 
 
 https://www.swisstransfer.com/d/8fd46c8b-5725-4a05-a4ad-ab31abbf1707 
+
+Connexion : 
+![Description du gif](connexion.gif)
 
 
 
