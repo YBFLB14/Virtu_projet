@@ -12,6 +12,7 @@ app.secret_key = 'a3f7cbd349e6a215d9c95ea3a882b3746cd7b2f14e36fda3ac89e4f35ef450
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.permanent_session_lifetime = timedelta(minutes=30)
 Session(app)
 
 auth = pam()
