@@ -41,7 +41,17 @@ Cette application web développée en Python avec le micro-framework Flask perme
 
 ## Architecture du projet
 
-![texte alternatif](image.png)
+
+L'application est organisée de la manière suivante :
+
+```
+tp_web_kvm/
+├── app.py                # Application principale Flask
+├── templates/            # Fichiers HTML (login.html, index.html, create.html, etc...)
+├── README.md             # Ce fichier
+└── image.png             # Schéma de l’architecture (illustration)
+```
+
 
 ## Lancer l'application
 
