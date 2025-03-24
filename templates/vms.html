@@ -8,9 +8,9 @@
 <body class="bg-gradient-to-br from-purple-100 to-indigo-200 min-h-screen">
   <div class="container mx-auto p-8">
 
-    <div class="flex justify-end items-center mb-4">
-      {% if session.get('host') %}
-        <span class="text-sm text-gray-700 mr-4">Connecté à : <strong>{{ session['host'] }}</strong></span>
+    <div class="flex justify-end items-center mb-4 fixed top-4 right-4">
+      {% if session.get('ip') %}
+        <span class="text-sm text-gray-700 mr-4">Connecté à : <strong>{{ session['ip'] }}</strong></span>
         <a href="{{ url_for('logout') }}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 text-sm">
           Déconnexion
         </a>
