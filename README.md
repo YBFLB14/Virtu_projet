@@ -23,6 +23,7 @@ Cette application web développée en Python avec le micro-framework Flask perme
 ## Fonctionnalités principales
 
 - Authentification via les identifiants système avec SSH
+- Gestion de plusieurs hyperviseurs(connexion ssh) grâce au choix de l’adresse IP et donc de l'hyperviseur
 - Affichage de la liste des machines virtuelles :
   - Machines virtuelles actives avec leurs caractéristiques (mémoire, vCPU, état)
   - Machines virtuelles inactives
