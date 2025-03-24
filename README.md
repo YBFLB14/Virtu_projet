@@ -15,16 +15,6 @@ Cette application web développée en Python avec Flask permet de gérer des mac
 
 ## Architecture du projet
 
-tp_web_kvm/
-│
-├── app.py                    # Application principale Flask
-├── templates/                # Dossiers des vues HTML 
-│   ├── index.html            # Tableau de bord
-│   ├── login.html            # Page de connexion
-│   ├── vms.html              # Liste des VMs et actions
-│   ├── create_vm.html        # Formulaire de création de VM
-│   └── edit_vm.html          # Formulaire de modification de VM
-├── README.md                 # Documentation du projet
 
 
 ## Prérequis
