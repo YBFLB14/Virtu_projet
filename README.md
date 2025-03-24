@@ -15,7 +15,7 @@ Cette application web développée en Python avec Flask permet de gérer des mac
 
 ## Architecture du projet
 
-
+![texte alternatif](image.png)
 
 ## Prérequis
 
