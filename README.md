@@ -22,11 +22,10 @@ Cette application web développée en Python avec le micro-framework Flask perme
 
 ## Fonctionnalités principales
 
-- Authentification via les identifiants système (PAM)
-- Connexion à un hyperviseur distant via SSH (`qemu+ssh`)
+- Authentification via les identifiants système avec SSH
 - Affichage de la liste des machines virtuelles :
-  - Machines virtuelles **actives** avec leurs caractéristiques (mémoire, vCPU, état)
-  - Machines virtuelles **inactives**
+  - Machines virtuelles actives avec leurs caractéristiques (mémoire, vCPU, état)
+  - Machines virtuelles inactives
 - Création de VMs avec :
   - Nom personnalisé
   - Taille de la mémoire (en MiB)
