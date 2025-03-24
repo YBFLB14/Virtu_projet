@@ -5,31 +5,35 @@ import os
 import time
 from xml.etree import ElementTree as ET
 from functools import wraps
+from pam import pam
 
 app = Flask(__name__)
 app.secret_key = 'a3f7cbd349e6a215d9c95ea3a882b3746cd7b2f14e36fda3ac89e4f35ef4503f'
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 Session(app)
+
+auth = pam()
 
 def _auth_callback(credentials, user_data):
     for cred in credentials:
-        if cred[0] == libvirt.VIR_CRED_PASSPHRASE:  # Mot de passe SSH
+        if cred[0] == libvirt.VIR_CRED_PASSPHRASE:
             cred[4] = session.get('password')
-        elif cred[0] == libvirt.VIR_CRED_AUTHNAME:  # Nom d'utilisateur
-            cred[4] = session.get('username', 'root')  # ou 'libvirt', ou ce que tu veux par défaut
+        elif cred[0] == libvirt.VIR_CRED_AUTHNAME:
+            cred[4] = session.get('username', 'root')
     return 0
 
 def connect():
     if 'uri' not in session or 'password' not in session:
         return None
     try:
-        # Authentification avec callback
-        auth = [
+        auth_data = [
             [libvirt.VIR_CRED_AUTHNAME, libvirt.VIR_CRED_PASSPHRASE],
             _auth_callback,
             None
         ]
-        conn = libvirt.openAuth(session['uri'], auth, 0)
+        conn = libvirt.openAuth(session['uri'], auth_data, 0)
         if conn is None:
             raise libvirt.libvirtError("Connexion échouée : libvirt.openAuth() a retourné None")
         return conn
@@ -52,6 +56,11 @@ def login():
         username = request.form['username'].strip()
         password = request.form['password'].strip()
 
+        # Authentification système via PAM
+        if not auth.authenticate(username, password):
+            flash("Échec d'authentification système.", "danger")
+            return render_template('login.html')
+
         uri = f"qemu+ssh://{username}@{host}/system"
 
         session['host'] = host
@@ -66,7 +75,7 @@ def login():
             return redirect(url_for('index'))
         else:
             session.clear()
-            flash("Échec de connexion.", "danger")
+            flash("Échec de connexion à libvirt.", "danger")
 
     return render_template('login.html')
 
