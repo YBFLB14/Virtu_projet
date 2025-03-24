@@ -7,7 +7,7 @@ from xml.etree import ElementTree as ET
 from functools import wraps
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
+app.secret_key = 'a3f7cbd349e6a215d9c95ea3a882b3746cd7b2f14e36fda3ac89e4f35ef4503f'
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
