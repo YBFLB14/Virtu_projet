@@ -1,89 +1,82 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from flask_session import Session
 from datetime import timedelta
-import libvirt
-import paramiko
-import os
 from functools import wraps
+import paramiko
+import os 
+import libvirt
+import time
+import getpass
+import xml.etree.ElementTree as ET
+
 
 app = Flask(__name__)
-app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SESSION_PERMANENT'] = False
-Session(app)
+app.secret_key = 'supersecretkey'  # Clé pour gérer les sessions
 
-# Connexion SSH avec Paramiko
-def ssh_connect(host, username, password):
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(minutes=30)
+
+def connect_ssh(ip, username):
     try:
+        password = getpass.getpass(f"Mot de passe pour {username}@{ip}: ")
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        client.connect(hostname=host, username=username, password=password)
+        client.connect(ip, username=username, password=password, timeout=10)
         return client
-    except Exception as e:
-        print(f"Erreur SSH : {e}")
-        return None
+    except paramiko.AuthenticationException:
+        return "Connexion échouée : Vérifiez l'adresse IP ou le mot de passe."
+    except Exception:
+        return "Connexion échouée : Impossible de se connecter à l'hôte."
 
-# Connexion à libvirt
-def connect():
-    if 'uri' not in session:
-        return None
-    try:
-        conn = libvirt.open(session['uri'])
-        return conn
-    except libvirt.libvirtError as e:
-        print(f"Erreur de connexion : {e}")
-        return None
-        
-# Décorateur pour vérifier la connexion
+def connect_libvirt():
+    if 'ip' in session and 'username' in session:
+        ip = session['ip']
+        username = session['username']
+        try:
+            conn = libvirt.open(f"qemu+ssh://{username}@{ip}/system?no_verify=1")
+            return conn
+        except libvirt.libvirtError as e:
+            print(f"Erreur connexion libvirt : {e}")
+            return None
+    return None
+
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'uri' not in session:
-            flash("Veuillez vous connecter.", "warning")
+        if 'ip' not in session or 'username' not in session:
+            flash("Vous devez être connecté.", "danger")
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        host = request.form['host'].strip()
-        username = request.form['username'].strip()
-        password = request.form['password'].strip()
+        ip = request.form['ip']
+        username = request.form['username']
 
-        if not ssh_connect(host, username, password):
-            flash("Échec de connexion SSH.", "danger")
-            return render_template('login.html')
-
-        session['host'] = host
-        session['username'] = username
-        session['uri'] = f"qemu+ssh://{username}@{host}/system"
-
-        conn = connect()
-        if conn:
-            conn.close()
-            flash("Connexion réussie.", "success")
-            return redirect(url_for('list_vms'))
+        ssh_client = connect_ssh(ip, username)
+        if isinstance(ssh_client, str):  
+            flash(ssh_client, "danger")
         else:
-            session.clear()
-            flash("Connexion libvirt échouée.", "danger")
+            session['ip'] = ip
+            session['username'] = username
+            flash("Connexion réussie !", "success")
+            return redirect(url_for('list_vms'))
 
     return render_template('login.html')
-
-@app.route('/')
-@login_required
-def index():
-    return redirect(url_for('list_vms'))
-
 @app.route('/logout')
 def logout():
     session.clear()
-    flash("Déconnecté avec succès.", "success")
+    flash("Déconnexion réussie.", "info")
     return redirect(url_for('login'))
 
 @app.route('/vms')
 @login_required
 def list_vms():
-    conn = connect()
+    conn = connect_libvirt()
     if not conn:
         flash("Connexion échouée.", "danger")
         return redirect(url_for('login'))
@@ -117,7 +110,7 @@ def list_vms():
 @app.route('/vm/<name>/start')
 @login_required
 def start_vm(name):
-    conn = connect()
+    conn = connect_libvirt()
     dom = conn.lookupByName(name)
     try:
         dom.create()
@@ -130,7 +123,7 @@ def start_vm(name):
 @app.route('/vm/<name>/stop')
 @login_required
 def stop_vm(name):
-    conn = connect()
+    conn = connect_libvirt()
     dom = conn.lookupByName(name)
     try:
         dom.destroy()
@@ -143,7 +136,7 @@ def stop_vm(name):
 @app.route('/vm/<name>/pause')
 @login_required
 def pause_vm(name):
-    conn = connect()
+    conn = connect_libvirt()
     if not conn:
         flash("Connexion échouée à l'hyperviseur.", "danger")
         return redirect(url_for('list_vms'))
@@ -163,7 +156,7 @@ def pause_vm(name):
 @app.route('/vm/<name>/resume')
 @login_required
 def resume_vm(name):
-    conn = connect()
+    conn = connect_libvirt()
     dom = conn.lookupByName(name)
     try:
         dom.resume()
@@ -176,7 +169,7 @@ def resume_vm(name):
 @app.route('/vm/<name>/save')
 @login_required
 def save_vm(name):
-    conn = connect()
+    conn = connect_libvirt()
     dom = conn.lookupByName(name)
     save_path = f"/var/lib/libvirt/qemu/save/{name}.img"
     try:
@@ -190,7 +183,7 @@ def save_vm(name):
 @app.route('/vm/<name>/restore')
 @login_required
 def restore_vm(name):
-    conn = connect()
+    conn = connect_libvirt()
     save_path = f"/var/lib/libvirt/qemu/save/{name}.img"
     try:
         conn.restore(save_path)
@@ -203,7 +196,7 @@ def restore_vm(name):
 @app.route('/vm/<name>/delete')
 @login_required
 def delete_vm(name):
-    conn = connect()
+    conn = connect_libvirt()
     dom = conn.lookupByName(name)
     try:
         if dom.isActive():
@@ -264,7 +257,7 @@ def create_vm():
         </domain>
         """
 
-        conn = connect()
+        conn = connect_libvirt()
         try:
             conn.defineXML(xml)
             flash("VM créée avec succès.", "success")
@@ -278,7 +271,7 @@ def create_vm():
 @app.route('/vm/<name>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_vm(name):
-    conn = connect()
+    conn = connect_libvirt()
     if not conn:
         flash("Connexion échouée.", "danger")
         return redirect(url_for('list_vms'))
@@ -333,4 +326,3 @@ def edit_vm(name):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
