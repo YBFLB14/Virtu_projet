@@ -44,6 +44,7 @@ Les fichiers ISO doivent être placés dans : /var/lib/libvirt/images/
 ## Lancer l'application
 
 Depuis le dossier du projet : python app.py
+
 Accéder ensuite à  via le navigateur web : http://localhost:5000
 
 
