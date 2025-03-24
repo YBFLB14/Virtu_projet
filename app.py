@@ -10,12 +10,16 @@ import xml.etree.ElementTree as ET
 
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'  # Clé pour gérer les sessions
+app.secret_key = 'supersecretkey'  
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1) 
+app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7) 
+
+
 
 @app.before_request
 def make_session_permanent():
     session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=30)
+
 
 def connect_ssh(ip, username):
     try:
