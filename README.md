@@ -68,8 +68,9 @@ Ensuite, ouvrez votre navigateur et accédez à :
 
 https://www.swisstransfer.com/d/8fd46c8b-5725-4a05-a4ad-ab31abbf1707 
 
-Connexion : 
-![Description du gif](video/connexion.gif)
+- Connexion à l'hyperviseur : [https://vimeo.com/1069051740/b888c58524](https://vimeo.com/1069060732/9e90442a97)
+- Gestion de la mise en pause et de la sauvegarde de machine :  [https://vimeo.com/1069065743/af847ec4f3](https://vimeo.com/1069065743/af847ec4f3)
+- Création, modification et suppression de machine : [https://vimeo.com/1069063336/4cea447e90](https://vimeo.com/1069063336/4cea447e90)
 
 
 
